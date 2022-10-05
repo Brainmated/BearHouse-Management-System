@@ -132,10 +132,11 @@ public class BearFrame {
 		addUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(e.getSource()==addUsers) {
-					AddUserDialog addDialog=new AddUserDialog();
-					//addDialog.setModalityType(ModalityType.APPLICATION_MODAL);
-					//addDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					addDialog.registerUser();
+					java.awt.EventQueue.invokeLater(new Runnable() {
+			            public void run() {
+			                new addEditUsers().setVisible(true);
+			            }
+			        });
 				}
 			}
 		});
