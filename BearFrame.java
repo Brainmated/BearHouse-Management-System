@@ -24,6 +24,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import javax.swing.JLabel;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -40,8 +42,8 @@ import java.sql.*;
 
 public class BearFrame {
 
-	private JFrame frame;
-
+	
+	public JFrame frame;
 	private JLabel label;
 	
     private BearFrame warehouse;
@@ -56,16 +58,16 @@ public class BearFrame {
     private JMenuItem interfaceOpt;
     private JMenuItem sql;
     private JMenuItem addUsers;
-    private JMenuItem editUsers;
+
     private JMenuItem auditUsers;
     private JMenuItem createOrder;
-    private JMenuItem editOrder;
+
     private JMenuItem storage;
     private JMenuItem search;
     private JMenuItem importDoc;
     private JMenuItem export;
     private JMenuItem addCustomer;
-    private JMenuItem searchCustomer;
+
     private JMenuItem auditCustomer;
     private JMenuItem help;
     private JMenuItem documentation;
@@ -83,22 +85,22 @@ public class BearFrame {
 	 * @throws SQLException 
 	 */
 
-	public BearFrame() throws ClassNotFoundException {
+	public void mainFrame() throws ClassNotFoundException {
 		
 		//Class.forName("oracle.jdbc.driver.OracleDriver");
 		//con = DriverManager.getConnection("jdbc:oracle:thin:@hostname:port/orcl", "username", "password");
 		
 		
 		
-		setFrame(new JFrame());
-		getFrame().setTitle("BearHouse Management System");
+		frame=new JFrame();
+		frame.setTitle("BearHouse Management System");
 		
-		getFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
-		getFrame().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getFrame().getContentPane().add(new JLabel(new ImageIcon("C:/Users/Alex/eclipse-workspace/GitHubPortfolio/src/development/beargineer.png")));
-		getFrame().setResizable(false);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().add(new JLabel(new ImageIcon("C:/Users/Alex/eclipse-workspace/GitHubPortfolio/src/development/beargineer.png")));
+		frame.setResizable(false);
 		menuBar = new JMenuBar();
-		getFrame().setJMenuBar(menuBar);
+		frame.setJMenuBar(menuBar);
 		
 		/**
 		 *
@@ -125,7 +127,7 @@ public class BearFrame {
 		users = new JMenu("Users");
 		menuBar.add(users);
 		
-		addUsers = new JMenuItem("Add User");
+		addUsers = new JMenuItem("Add/Edit User");
 		users.add(addUsers);
 		addUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -137,17 +139,7 @@ public class BearFrame {
 				}
 			}
 		});
-		//addUsers.addActionListener(this);
-		editUsers = new JMenuItem("Edit User");
-		users.add(editUsers);
-		editUsers.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(e.getSource()==editUsers) {
-					EditUsers editDialog=new EditUsers();
-					editDialog.showUsers();
-				}
-			}
-		});
+
 		//editUsers.addActionListener(this);
 		auditUsers = new JMenuItem("Audit User");
 		users.add(auditUsers);
@@ -170,13 +162,29 @@ public class BearFrame {
 		
 		createOrder = new JMenuItem("Create Work Order");
 		warehouseOperations.add(createOrder);
-		//createOrder.addActionListener(this);
-		editOrder = new JMenuItem("Edit Work Order");
-		warehouseOperations.add(editOrder);
-		//editOrder.addActionListener(this);
-		storage = new JMenuItem("Storage Control");
+		createOrder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==createOrder) {
+					CreateOrder createOrder=new CreateOrder();
+					createOrder.setInterface();
+				}
+			}
+		});
+
+		storage = new JMenuItem("Import Inventory");
 		warehouseOperations.add(storage);
 		//storage.addActionListener(this);
+		storage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==storage) {
+					SwingUtilities.invokeLater(new Runnable() {
+			            public void run() {
+			                new ImportStorage();
+			            }
+			        });
+				}
+			}
+		});
 		search = new JMenuItem("Search Location/Pallet/Box");
 		warehouseOperations.add(search);
 		//search.addActionListener(this);
@@ -203,11 +211,9 @@ public class BearFrame {
 		menuBar.add(customers);
 		
 		
-		addCustomer = new JMenuItem("Add Customer");
+		addCustomer = new JMenuItem("Add/Edit Customer");
 		customers.add(addCustomer);
-		//addCustomer.addActionListener(this);
-		searchCustomer = new JMenuItem("Search/Edit Customer");
-		customers.add(searchCustomer);
+
 		//searchCustomer.addActionListener(this);
 		auditCustomer = new JMenuItem("Audit Customer");
 		customers.add(auditCustomer);
@@ -239,98 +245,11 @@ public class BearFrame {
 				}
 			}
 		});
-		
-		getFrame().setVisible(true); //the main frame
-		
-		
+		frame.setVisible(true);
+
 	}
 
-	/*@Override
-	public void actionPerformed(ActionEvent ae) {
-		// TODO Auto-generated method stub
-		
-		
-		if(ae.getSource() == interfaceOpt) {
-			JOptionPane.showMessageDialog(null, "Test");
-			System.out.println("Test");
-		}
-		else if(ae.getSource()==sql){
-			System.out.println("Test1");
-			
-		}
-		else if(ae.getSource()==addUsers) {
-			try {
-				AddUserDialog addDialog=new AddUserDialog();
-				//addDialog.setModalityType(ModalityType.APPLICATION_MODAL);
-				//addDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				addDialog.registerUser();
-			}catch(Exception ex) {
-				ex.printStackTrace();
-			}
-			
-			System.out.println("Test2");
-		}
-		else if(ae.getSource()==editUsers) {
-			
-			try {
-				EditUsers editDialog=new EditUsers();
-				editDialog.showUsers();
-			}catch(Exception ex) {
-				ex.printStackTrace();
-			}
-			System.out.println("Test3");
-		}
-		else if(ae.getSource()==auditUsers) {
-			AuditUsers audit=new AuditUsers();
-			System.out.println("Test4");
-		}
-		else if(ae.getSource()==createOrder) {
-			System.out.println("Test5");
-		}
-		else if(ae.getSource()==editOrder) {
-			
-		}
-		else if(ae.getSource()==storage) {
-			
-		}
-		else if(ae.getSource()==search) {
-			
-		}
-		else if(ae.getSource()==importDoc) {
-			
-		}
-		else if(ae.getSource()==export) {
-			
-		}
-		else if(ae.getSource()==addCustomer) {
-			
-		}
-		else if(ae.getSource()==searchCustomer) {
-			
-		}
-		else if(ae.getSource()==auditCustomer) {
-			
-		}
-		else if(ae.getSource()==help) {
-			
-		}
-		else if(ae.getSource()==documentation) {
-			
-		}
-		else {
-			System.out.println("Error");
-		}
-		
-	}*/
-	public JFrame getFrame() {
-		return frame;
-	}
-	public void setFrame(JFrame frame) {
-		this.frame = frame;
-	}
-	
 
-	
 }
 	
 

@@ -6,26 +6,38 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Vector;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 
-public class AddUserDialog extends JDialog implements ActionListener{
+public class AddUserDialog{
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	
-	String fName, lName, ID, positionChosen;
+	String fName, lName, id, positionChosen;
 	String[] positions= {"Manager", "Administrator", "Moderator", "Index User", "Warehouse User"};
-	static ArrayList<String> User=new ArrayList<String>();
-	static ArrayList<String> fnames=new ArrayList<String>();
-	static ArrayList<String> lnames=new ArrayList<String>();
-	static ArrayList<String> ids=new ArrayList<String>();
-	static ArrayList<String> allPositions=new ArrayList<String>();
 	
 	JTextField fname=new JTextField(10);
 	JTextField lname=new JTextField(10);
-	static JTextField id=new JTextField(10);
-	JComboBox<String> position=new JComboBox<String>(positions);
+	static JTextField iD=new JTextField(10);
+	
+	
+	DefaultComboBoxModel<String> comboModel = new DefaultComboBoxModel<String>(positions);
+	JComboBox<String> position=new JComboBox<String>(comboModel);
 	JFrame frame=new JFrame();
-	JPanel panel=new JPanel();
+	JPanel addingPanel=new JPanel();
+	JPanel editingPanel=new JPanel();
+	
+	
+	
+	private JTable table=new JTable();
+	Object[] columns= {"First Name", "Last Name", "ID", "Position"};
+	DefaultTableModel model=new DefaultTableModel();
 
 	JLabel flabel=new JLabel("First Name: ");
 	JLabel llabel=new JLabel("Last Name: ");
@@ -35,15 +47,20 @@ public class AddUserDialog extends JDialog implements ActionListener{
 	JButton cancel=new JButton("Cancel");
 	
 	
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void registerUser() {
 		
 		
 		frame.setSize(300,300);
 		frame.setTitle("Add User");
-		frame.getContentPane().add(panel);
+		frame.getContentPane().add(addingPanel);
+		frame.add(addingPanel, BorderLayout.WEST);
+		frame.add(editingPanel, BorderLayout.EAST);
 		frame.setLocationRelativeTo(null);
 		
-		panel.setLayout(new GridLayout(5,2,10,10));
+		addingPanel.setLayout(new GridLayout(5,2,10,10));
 
 		flabel.setHorizontalAlignment(JLabel.CENTER);
 		llabel.setHorizontalAlignment(JLabel.CENTER);
@@ -53,22 +70,59 @@ public class AddUserDialog extends JDialog implements ActionListener{
 		cancel.setHorizontalAlignment(JButton.CENTER);
 		
 		
-		panel.add(flabel);
-		panel.add(fname);
+		addingPanel.add(flabel);
+		addingPanel.add(fname);
 		
-		panel.add(llabel);
-		panel.add(lname);
+		addingPanel.add(llabel);
+		addingPanel.add(lname);
 		
-		panel.add(idlabel);
-		panel.add(id);
+		addingPanel.add(idlabel);
+		addingPanel.add(iD);
 		
-		panel.add(positionlabel);		
-		panel.add(position);
+		addingPanel.add(positionlabel);		
+		addingPanel.add(position);
 		
-		panel.add(save);
-		save.addActionListener(this);
-		panel.add(cancel);
-		cancel.addActionListener(this);
+		save.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==save) {
+					fName=fname.getText();
+					lName=lname.getText();
+					id=iD.getText();
+					positionChosen=position.getSelectedItem().toString();
+					
+					JOptionPane.showMessageDialog(frame, "User: "+id+" created.");
+					fname.setText("");
+					lname.setText("");
+					iD.setText("");
+					fname.setText("");
+				}
+			}
+		});
+		addingPanel.add(save);
+		
+		cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==cancel) {
+					fname.setText("");
+					lname.setText("");
+					iD.setText("");
+					position.removeItem(positionChosen);
+					//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				}
+			}
+		});
+		addingPanel.add(cancel);
+		
+		table.setFillsViewportHeight(true);
+		table.setForeground(Color.WHITE);
+		table.setBackground(Color.BLACK);
+		
+		model.setColumnIdentifiers(columns);
+		table.setModel(model);
+		table.setRowHeight(30);
+		table.setAutoCreateRowSorter(true);
+		
+		Object[] row=new Object[4];
 		
 		
 		frame.setResizable(false);
@@ -76,39 +130,7 @@ public class AddUserDialog extends JDialog implements ActionListener{
 		frame.setVisible(true);
 		frame.pack();
 	}
-	public void actionPerformed(ActionEvent e) {
-		
-		if(e.getSource()==save) {
-			fName=fname.getText();
-			lName=lname.getText();
-			ID=id.getText();
-			positionChosen=position.getSelectedItem().toString();
-			
-			fnames.add(fName);
-			lnames.add(lName);
-			ids.add(ID);
-			allPositions.add(positionChosen);
-			
-			JOptionPane.showMessageDialog(frame, "User: "+ID+" created.");
-			User.addAll(fnames);
-			User.addAll(lnames);
-			User.addAll(ids);
-			User.addAll(allPositions);
-			
-		}
-		else if(e.getSource()==cancel){
-			fname.setText("");
-			lname.setText("");
-			id.setText("");
-			position.removeItem(positionChosen);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-		}
-		else {
-			JOptionPane.showMessageDialog(frame,
-				    "Error!",
-				    "Inane warning",
-				    JOptionPane.WARNING_MESSAGE);
-		}
-	}
+	
+	
 
 }

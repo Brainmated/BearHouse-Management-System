@@ -6,33 +6,35 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class AuditUsers /*extends AddUserDialog*/{
+public class AuditUsers extends AddUserDialog{
 	//AuditUsers audit=new AuditUsers();
-	JFrame frame=new JFrame("Edit Users");
+	JFrame frame=new JFrame("Audit Users");
 	JPanel panel=new JPanel(new FlowLayout(FlowLayout.CENTER));
 	ArrayList<String> list=new ArrayList<String>();
-	JTable table=new JTable();
-	JScrollPane scrollPane=new JScrollPane();
-	DefaultTableModel model=new DefaultTableModel();
 	
+	JTable table=new JTable(new DefaultTableModel(new Object[] {"First Name", "Last Name", "ID", "Position"},20));
+	DefaultTableModel model=new DefaultTableModel();
+	JScrollPane scrollPane=new JScrollPane();
+	
+	public String toString() {
+		return fName;
+	}
 	
 	
 	public void displayUsers() {
 		frame.setSize(300,300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		frame.setContentPane(panel);
 		
 		table.setModel(model);
-		model.addColumn("First Name");
-		model.addColumn("Last Name");
-		model.addColumn("ID");
-		model.addColumn("Position");
+		
+		
+		//model.addRow(new Object[] {fName, lName, iD, positionChosen});
+		//VERY IMPORTANT(!!!) DONT FORGET TO CHANGE FROM ARRAY LIST CONTENT TO A toString() METHOD(!!!)
+		System.out.println(fName);
+		
 		panel.add(table);
-		//list.add(audit.fName);
-		//list.add(audit.lName);
-		//list.add(audit.ID);
-		//list.add(positionChosen);
-		//model.addRow(new Object[] {list});
+		panel.add(scrollPane);
 		
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null);
